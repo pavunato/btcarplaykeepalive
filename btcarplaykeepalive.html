@@ -1,126 +1,251 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#091713">
-  <meta name="description" content="BT CarPlay KeepAlive helps a selected Bluetooth tethering connection stay active while CarPlay is running.">
-  <title>BT CarPlay KeepAlive — Keep the link alive</title>
-  <style>
-    :root { color-scheme: dark; --bg:#091713; --panel:#10231c; --panel2:#142a21; --ink:#f1f3e9; --muted:#a0b2a6; --line:#30503d; --accent:#c9ef8d; --live:#6eeaa1; --dim:#e5a38c; }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.16; background-image:radial-gradient(#b6d2aa 0.5px, transparent 0.5px); background-size:7px 7px; mask-image:linear-gradient(to bottom,#000,transparent 80%); }
-    a { color:inherit; }
-    .wrap { width:min(1120px,calc(100% - 44px)); margin:auto; }
-    .top { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:27px 0; border-bottom:1px solid var(--line); }
-    .brand { display:flex; align-items:center; gap:11px; font-size:.86rem; font-weight:800; letter-spacing:.04em; text-decoration:none; text-transform:uppercase; }
-    .mark { display:grid; place-items:center; width:31px; height:31px; border:1px solid var(--accent); border-radius:9px; color:var(--accent); font:700 19px/1 Georgia,serif; }
-    .top-link { font-size:.82rem; color:var(--muted); text-decoration:none; border-bottom:1px solid var(--line); }
-    .top-link:hover { color:var(--accent); }
-    .hero { display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(32px,6vw,80px); align-items:center; padding:clamp(72px,10vw,135px) 0 100px; }
-    .eyebrow { display:flex; align-items:center; gap:12px; color:var(--accent); font-size:.72rem; font-weight:800; letter-spacing:.19em; text-transform:uppercase; }
-    .eyebrow::before { content:""; width:26px; height:1px; background:var(--accent); }
-    h1,h2,h3,p { margin-top:0; }
-    h1,h2 { font-family:Georgia,"Times New Roman",serif; font-weight:400; letter-spacing:-.045em; }
-    h1 { font-size:clamp(3.8rem,7.4vw,7.3rem); line-height:.96; margin:28px 0 30px; }
-    h1 em { color:var(--accent); font-weight:400; }
-    .lead { color:var(--muted); max-width:37ch; font-size:clamp(1.03rem,1.55vw,1.25rem); line-height:1.65; }
-    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:33px; }
-    .button { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:47px; padding:10px 18px; text-decoration:none; border:1px solid var(--line); border-radius:5px; font-size:.86rem; font-weight:750; transition:transform .18s,border-color .18s,background .18s; }
-    .button.primary { background:var(--accent); border-color:var(--accent); color:#102017; }
-    .button:hover { transform:translateY(-2px); border-color:var(--accent); }
-    .button:focus-visible,.top-link:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
-    .hero-note { margin:20px 0 0; color:var(--muted); font-size:.76rem; }
-    .display { position:relative; padding:24px; border:1px solid #3c624a; border-radius:24px; background:radial-gradient(circle at 65% 0%,#275035 0,transparent 46%),linear-gradient(150deg,#172d21,#0a1713 75%); box-shadow:0 34px 70px #020a0770, inset 0 1px #ffffff16; overflow:hidden; }
-    .display::after { content:""; position:absolute; inset:8px; border:1px solid #ffffff10; border-radius:18px; pointer-events:none; }
-    .display-top { display:flex; justify-content:space-between; align-items:center; color:#bcd2bc; font:700 .72rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.1em; text-transform:uppercase; }
-    .display-top span:last-child { color:var(--accent); }
-    .route { display:grid; gap:14px; margin:45px 0 36px; }
-    .route-row { display:flex; align-items:center; gap:13px; min-height:67px; padding:14px 16px; background:#0c1c16ad; border:1px solid #41674c; border-radius:10px; }
-    .route-row strong { display:block; font-size:.86rem; letter-spacing:.01em; }
-    .route-row small { display:block; color:#95b59e; font-size:.7rem; }
-    .node { flex:none; display:grid; place-items:center; width:34px; height:34px; border:1px solid #5c8767; border-radius:8px; color:var(--accent); font:700 18px Georgia,serif; }
-    .route-mid { height:35px; margin:-6px 0 -6px 31px; border-left:1px dashed var(--accent); display:flex; align-items:center; }
-    .route-mid span { margin-left:14px; color:var(--accent); font:.67rem ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.06em; text-transform:uppercase; }
-    .live { display:flex; align-items:center; gap:10px; padding-top:16px; border-top:1px solid #426a4d; color:#bad1bf; font:.68rem ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.07em; }
-    .pulse { flex:none; width:9px; height:9px; border-radius:50%; background:var(--live); box-shadow:0 0 0 5px #6eeaa125,0 0 20px var(--live); animation:glow 2s ease-in-out infinite; }
-    @keyframes glow { 50% { box-shadow:0 0 0 9px #6eeaa10c,0 0 11px var(--live); } }
-    section { border-top:1px solid var(--line); }
-    .section-head { display:flex; justify-content:space-between; gap:30px; align-items:end; padding:77px 0 38px; }
-    .section-head h2 { margin:0; max-width:12ch; font-size:clamp(2.45rem,4.6vw,4.8rem); line-height:1.03; }
-    .section-head p { margin:0; max-width:36ch; color:var(--muted); }
-    .cards { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--line); margin-bottom:98px; }
-    .card { min-height:245px; padding:28px; border-right:1px solid var(--line); background:linear-gradient(145deg,#17302555,transparent); }
-    .card:last-child { border-right:0; }
-    .num { color:var(--accent); font:.7rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-    .card h3 { margin:42px 0 12px; font:400 1.7rem/1.13 Georgia,serif; letter-spacing:-.025em; }
-    .card p { margin:0; color:var(--muted); font-size:.91rem; }
-    .steps { display:grid; grid-template-columns:.8fr 1.2fr; gap:60px; padding:85px 0 94px; }
-    .steps h2 { font-size:clamp(2.5rem,4.4vw,4.4rem); line-height:1.05; margin:19px 0; }
-    .steps-intro { color:var(--muted); max-width:30ch; }
-    ol { list-style:none; padding:0; margin:0; counter-reset:step; }
-    li { counter-increment:step; display:grid; grid-template-columns:43px 1fr; gap:15px; padding:21px 0; border-bottom:1px solid var(--line); }
-    li:first-child { border-top:1px solid var(--line); }
-    li::before { content:"0" counter(step); color:var(--accent); font:.75rem ui-monospace,SFMono-Regular,Menlo,monospace; padding-top:4px; }
-    li strong { display:block; font-size:.98rem; }
-    li span { color:var(--muted); font-size:.88rem; }
-    .foot { display:flex; justify-content:space-between; gap:30px; padding:36px 0 48px; color:var(--muted); font-size:.77rem; }
-    .foot p { max-width:63ch; margin:0; }
-    .foot a:hover { color:var(--accent); }
-    @media (max-width:760px) { .hero { grid-template-columns:1fr; padding:70px 0; } .display { max-width:540px; } .section-head { display:block; } .section-head p { margin-top:23px; } .cards { grid-template-columns:1fr; } .card { min-height:0; border-right:0; border-bottom:1px solid var(--line); } .card:last-child { border-bottom:0; } .card h3 { margin-top:22px; } .steps { grid-template-columns:1fr; gap:24px; } .foot { display:block; } .foot a { display:inline-block; margin-top:20px; } }
-    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important; } }
-  </style>
+<meta charset="utf-8">
+<title>BT CarPlay KeepAlive — Bluetooth tethering during CarPlay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Keep a selected Bluetooth tethering connection active while CarPlay is running, with a small interface-bound heartbeat.">
+<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fafafa;
+    --fg: #171717;
+    --muted: #737373;
+    --border: #ededed;
+    --win-bg: #ffffff;
+    --win-border: #e5e5e5;
+    --accent: #28c840;
+    --code-bg: #f4f4f4;
+    --tint: #17804e;
+    --tint-soft: rgba(23, 128, 78, 0.13);
+    --good: #1f9d55;
+    --inactive: #bb6659;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0a0a;
+      --fg: #f4f4f4;
+      --muted: #8a8a8a;
+      --border: #262626;
+      --win-bg: #111113;
+      --win-border: #2a2a2d;
+      --accent: #30d158;
+      --code-bg: #1a1a1c;
+      --tint: #70dca0;
+      --tint-soft: rgba(112, 220, 160, 0.16);
+      --good: #34c77b;
+      --inactive: #e5897d;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding: 0 1.25rem;
+  }
+  main { width: 100%; max-width: 1040px; margin: 0 auto; }
+  a { color: inherit; }
+  .topnav { max-width: 1040px; margin: 0 auto; padding: 1.5rem 0 0; }
+  .topnav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .topnav a:hover { color: var(--fg); }
+  .hero {
+    padding: 2.5rem 0 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-icon { width: 84px; height: 84px; border-radius: 19px; box-shadow: 0 12px 30px -12px rgba(0,0,0,0.3); }
+  .hero h1 { margin: 1.25rem 0 0; font-size: clamp(2.25rem, 7vw, 3.25rem); font-weight: 700; letter-spacing: -0.03em; }
+  .tagline { margin: 0.5rem 0 1rem; color: var(--muted); font-size: clamp(1.05rem, 3vw, 1.25rem); max-width: 34rem; }
+  .badges { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; justify-content: center; }
+  .badge {
+    font-family: ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Mono", monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: var(--code-bg);
+    border: 1px solid var(--win-border);
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+  }
+  .hero-copy { max-width: 36rem; color: var(--muted); line-height: 1.65; margin: 0 0 1.75rem; }
+  .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.7rem 1.15rem;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+    transition: transform 160ms ease;
+  }
+  .btn.primary { background: var(--fg); color: var(--bg); }
+  .btn.ghost { border-color: var(--win-border); color: var(--fg); }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 3px solid var(--tint-soft); outline-offset: 3px; }
+  .hero-art { width: 100%; max-width: 460px; margin-top: 3rem; color: var(--tint); }
+  .hero-art svg { width: 100%; height: auto; display: block; }
+  .features { padding: 2rem 0 4rem; }
+  .feature-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    padding: 3.5rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .feature-row:nth-child(even) { direction: rtl; }
+  .feature-row:nth-child(even) > * { direction: ltr; }
+  .feature-art { color: var(--tint); }
+  .feature-art svg { width: 100%; height: auto; display: block; }
+  .feature-copy .kicker {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tint);
+    margin-bottom: 0.6rem;
+  }
+  .feature-copy h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 3vw, 1.75rem); letter-spacing: -0.02em; }
+  .feature-copy p { margin: 0; color: var(--muted); line-height: 1.65; }
+  .cta-band { text-align: center; padding: 3.5rem 0 4.5rem; border-top: 1px solid var(--border); }
+  .cta-band h2 { margin: 0 0 1.5rem; font-size: clamp(1.5rem, 4vw, 2.1rem); letter-spacing: -0.02em; }
+  .fine-print { max-width: 39rem; margin: 1.5rem auto 0; color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
+  footer { padding: 2rem 0 2.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.78rem; text-align: center; }
+  footer a { color: var(--muted); }
+  @keyframes softPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .anim-pulse { animation: softPulse 2.6s ease-in-out infinite; transform-origin: center; }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .anim-pulse { animation: none; } }
+  @media (max-width: 760px) { .feature-row { grid-template-columns: 1fr; gap: 1.75rem; padding: 2.75rem 0; } .feature-row:nth-child(even) { direction: ltr; } }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <nav class="top" aria-label="Site">
-      <a class="brand" href="#top"><span class="mark" aria-hidden="true">↝</span> BT CarPlay KeepAlive</a>
-      <a class="top-link" href="https://github.com/pavunato/btcarplaykeepalive">Source on GitHub ↗</a>
-    </nav>
-    <main id="top">
-      <header class="hero">
-        <div>
-          <div class="eyebrow">Bluetooth tethering · CarPlay</div>
-          <h1>Keep the<br><em>link alive.</em></h1>
-          <p class="lead">A tiny, targeted heartbeat for the Bluetooth connection you rely on during a CarPlay drive. Choose the device once; the tweak handles the active moments.</p>
-          <div class="actions">
-            <a class="button primary" href="https://github.com/pavunato/btcarplaykeepalive/releases/download/v0.2.2/com.pavunato.btcarplaykeepalive_0.2.2_iphoneos-arm64.deb">Download 0.2.2 <span aria-hidden="true">↗</span></a>
-            <a class="button" href="#setup">How it works <span aria-hidden="true">↓</span></a>
-          </div>
-          <p class="hero-note">Rootless jailbreak · Tested on iPhone 11 / iOS 18.5</p>
-        </div>
-        <div class="display" role="img" aria-label="Diagram of an active Bluetooth device sending a heartbeat to a CarPlay connection">
-          <div class="display-top"><span>Connection monitor</span><span>Drive active</span></div>
-          <div class="route">
-            <div class="route-row"><span class="node" aria-hidden="true">ᛒ</span><div><strong>Selected Bluetooth device</strong><small>Connected and enabled</small></div></div>
-            <div class="route-mid"><span>Small packet · every 5 seconds</span></div>
-            <div class="route-row"><span class="node" aria-hidden="true">↗</span><div><strong>Active tethering interface</strong><small>Packet bound to this route</small></div></div>
-          </div>
-          <div class="live"><span class="pulse" aria-hidden="true"></span> Green when a heartbeat is sent</div>
-        </div>
-      </header>
+  <nav class="topnav"><a href="https://repopo.pages.dev/">&larr; repopo</a></nav>
 
-      <section aria-labelledby="features-title">
-        <div class="section-head"><h2 id="features-title">Made for the moments that move.</h2><p>BT CarPlay KeepAlive works with your existing connection. It steps in only when CarPlay and your selected Bluetooth device are both active.</p></div>
-        <div class="cards">
-          <div class="card"><span class="num">01 / CONTROL</span><h3>One switch per device.</h3><p>Find “Stay Connected While CarPlay” on the device’s Bluetooth detail page in Settings.</p></div>
-          <div class="card"><span class="num">02 / PRECISION</span><h3>Only during CarPlay.</h3><p>The heartbeat stops when CarPlay ends, the device disconnects, or you turn the setting off.</p></div>
-          <div class="card"><span class="num">03 / FEEDBACK</span><h3>See the activity.</h3><p>An optional CarPlay sidebar indicator turns green after a successful send and red when inactive.</p></div>
-        </div>
-      </section>
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <img class="hero-icon" src="https://repopo.pages.dev/icons/com.pavunato.btcarplaykeepalive.png" alt="BT CarPlay KeepAlive icon" width="84" height="84">
+      <h1 id="page-title">BT CarPlay KeepAlive</h1>
+      <p class="tagline">Keep your Bluetooth tethering active while CarPlay is on</p>
+      <div class="badges">
+        <span class="badge">v0.2.2</span>
+        <span class="badge">iPhone 11 / iOS 18.5 tested</span>
+        <span class="badge">Rootless</span>
+      </div>
+      <p class="hero-copy">Choose the Bluetooth device you use for tethering. While it is connected and CarPlay is active, a tiny packet gives the existing link a reason to stay busy. When either ends, the heartbeat stops.</p>
+      <div class="actions">
+        <a class="btn primary" href="sileo://source/https://repopo.pages.dev">Add to Sileo</a>
+        <a class="btn ghost" href="https://repopo.pages.dev/changelogs/btcarplaykeepalive-0.2.2.html">Release notes</a>
+      </div>
 
-      <section class="steps" id="setup" aria-labelledby="setup-title">
-        <div><div class="eyebrow">Setup</div><h2 id="setup-title">Ready in a few taps.</h2><p class="steps-intro">No new app to manage. The control lives right where you already manage Bluetooth devices.</p></div>
-        <ol>
-          <li><div><strong>Install the rootless package.</strong><span>Use your package manager or install the release `.deb` over SSH.</span></div></li>
-          <li><div><strong>Open Settings → Bluetooth → ⓘ.</strong><span>Choose the device you use for tethering.</span></div></li>
-          <li><div><strong>Enable Stay Connected While CarPlay.</strong><span>Connect to CarPlay and use your device normally.</span></div></li>
-        </ol>
-      </section>
-    </main>
-    <footer class="foot"><p>Best-effort activity for an existing connection. It does not pair or reconnect devices, and cannot guarantee that an accessory or carrier keeps a link open. Built for rootless arm64/arm64e; private iOS APIs may change across releases.</p><a href="https://github.com/pavunato/btcarplaykeepalive">View source ↗</a></footer>
-  </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 400 260" fill="none">
+          <rect x="8" y="8" width="384" height="244" rx="26" fill="var(--win-bg)" stroke="var(--win-border)" stroke-width="2"/>
+          <rect x="30" y="32" width="340" height="196" rx="14" fill="var(--code-bg)"/>
+          <rect x="52" y="63" width="106" height="132" rx="16" fill="var(--win-bg)" stroke="var(--win-border)" stroke-width="2"/>
+          <rect x="65" y="80" width="80" height="12" rx="6" fill="var(--fg)" opacity="0.7"/>
+          <rect x="65" y="106" width="80" height="57" rx="8" fill="var(--tint)" opacity="0.13"/>
+          <circle cx="84" cy="134" r="8" fill="var(--tint)"/>
+          <rect x="101" y="128" width="33" height="12" rx="6" fill="var(--tint)"/>
+          <path d="M173 130 H226" stroke="var(--tint)" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/>
+          <circle class="anim-pulse" cx="201" cy="130" r="9" fill="var(--good)"/>
+          <path d="M222 120 L233 130 L222 140" stroke="var(--tint)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="243" y="71" width="112" height="119" rx="16" fill="var(--win-bg)" stroke="var(--win-border)" stroke-width="2"/>
+          <path d="M256 150 C271 123 285 145 298 116 C310 89 327 109 341 91" stroke="var(--tint)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="332" cy="175" r="7" fill="var(--good)"/>
+          <text x="200" y="215" text-anchor="middle" font-family="ui-monospace, SF Mono, Menlo, monospace" font-size="10" fill="var(--muted)">BLUETOOTH DEVICE + CARPLAY ACTIVE</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="features" aria-label="Features">
+      <div class="feature-row">
+        <div class="feature-art" aria-hidden="true">
+          <svg viewBox="0 0 380 200" fill="none">
+            <rect x="88" y="18" width="204" height="166" rx="22" fill="var(--win-bg)" stroke="var(--win-border)" stroke-width="2"/>
+            <rect x="111" y="41" width="158" height="12" rx="6" fill="var(--fg)" opacity="0.72"/>
+            <rect x="111" y="67" width="117" height="8" rx="4" fill="var(--muted)" opacity="0.4"/>
+            <rect x="111" y="103" width="158" height="51" rx="9" fill="var(--code-bg)"/>
+            <rect x="221" y="118" width="37" height="21" rx="10.5" fill="var(--tint)"/>
+            <circle cx="247" cy="128.5" r="8" fill="var(--win-bg)"/>
+            <rect x="122" y="120" width="72" height="8" rx="4" fill="var(--fg)" opacity="0.6"/>
+            <rect x="122" y="136" width="52" height="6" rx="3" fill="var(--muted)" opacity="0.45"/>
+          </svg>
+        </div>
+        <div class="feature-copy">
+          <span class="kicker">One device at a time</span>
+          <h2>The switch lives in Bluetooth Settings</h2>
+          <p>Open Settings, tap the info button next to your tethering device, and enable “Stay Connected While CarPlay.” Each device keeps its own choice.</p>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-art" aria-hidden="true">
+          <svg viewBox="0 0 380 200" fill="none">
+            <rect x="30" y="48" width="320" height="104" rx="20" fill="var(--win-bg)" stroke="var(--win-border)" stroke-width="2"/>
+            <circle cx="94" cy="100" r="26" fill="var(--tint)" opacity="0.13"/>
+            <circle cx="94" cy="100" r="9" fill="var(--good)"/>
+            <path d="M129 100 H249" stroke="var(--tint)" stroke-width="3" stroke-dasharray="5 7" stroke-linecap="round"/>
+            <circle class="anim-pulse" cx="191" cy="100" r="8" fill="var(--good)"/>
+            <rect x="267" y="80" width="54" height="40" rx="8" fill="var(--code-bg)" stroke="var(--win-border)" stroke-width="2"/>
+            <path d="M279 105 L289 95 L298 101 L309 88" stroke="var(--tint)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="190" y="177" text-anchor="middle" font-family="ui-monospace, SF Mono, Menlo, monospace" font-size="11" fill="var(--muted)">one small packet every 5 seconds</text>
+          </svg>
+        </div>
+        <div class="feature-copy">
+          <span class="kicker">Traffic stays on its route</span>
+          <h2>A heartbeat for the active link</h2>
+          <p>Each four-byte UDP packet is bound to an active non-Wi-Fi interface, so it cannot quietly switch to the phone’s ordinary Wi-Fi or cellular route.</p>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-art" aria-hidden="true">
+          <svg viewBox="0 0 380 200" fill="none">
+            <rect x="22" y="32" width="336" height="136" rx="22" fill="var(--win-bg)" stroke="var(--win-border)" stroke-width="2"/>
+            <rect x="40" y="52" width="300" height="96" rx="12" fill="var(--code-bg)"/>
+            <rect x="54" y="68" width="55" height="65" rx="9" fill="var(--win-bg)" stroke="var(--win-border)" stroke-width="1.5"/>
+            <circle cx="81" cy="100" r="13" fill="var(--good)"/>
+            <path d="M147 88 H300 M147 105 H258 M147 122 H282" stroke="var(--muted)" opacity="0.4" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="305" cy="155" r="9" fill="var(--inactive)"/>
+          </svg>
+        </div>
+        <div class="feature-copy">
+          <span class="kicker">A quick status check</span>
+          <h2>See when it is active</h2>
+          <p>The optional CarPlay sidebar indicator is green after a heartbeat is sent and red when inactive. You can hide it from the same Bluetooth detail page.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <h2>Ready for the next drive.</h2>
+      <div class="actions">
+        <a class="btn primary" href="sileo://source/https://repopo.pages.dev">Add to Sileo</a>
+        <a class="btn ghost" href="https://repopo.pages.dev/#tweaks">Browse all tweaks</a>
+      </div>
+      <p class="fine-print">For an existing Bluetooth tethering connection. The tweak does not pair or reconnect devices and cannot guarantee an accessory or carrier keeps the link open. Tested on iPhone 11 / iOS 18.5 with a rootless jailbreak.</p>
+    </section>
+  </main>
+
+  <footer>repopo &middot; <a href="https://repopo.pages.dev/">back to catalog</a> &middot; <a href="https://github.com/pavunato/btcarplaykeepalive">source</a></footer>
 </body>
 </html>
