@@ -1,0 +1,30 @@
+{
+  "class": "DepictionTabView",
+  "minVersion": "0.4",
+  "tintColor": "#2BA66B",
+  "tabs": [
+    {
+      "class": "DepictionStackView",
+      "tabname": "Details",
+      "views": [
+        { "class": "DepictionHeaderView", "title": "BT CarPlay KeepAlive" },
+        { "class": "DepictionSubheaderView", "title": "Keep your Bluetooth tethering active while CarPlay is on" },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Choose a Bluetooth device in Settings and BT CarPlay KeepAlive sends a tiny heartbeat while that device is connected and CarPlay is active.\n\n- **Per-device switch:** Settings → Bluetooth → ⓘ → Stay Connected While CarPlay.\n- **Targeted traffic:** The packet is bound to an active non-Wi-Fi interface. It cannot fall back to the regular Wi-Fi or cellular route.\n- **At-a-glance activity:** An optional CarPlay sidebar marker is green after a successful send and red when inactive.\n- **Quiet when you stop:** The heartbeat stops when CarPlay ends, the selected device disconnects, or you turn off the switch.\n\nThe tweak works with an existing connection. It does not pair or reconnect devices, and cannot guarantee that a carrier or accessory keeps a link open. Tested on iPhone 11 / iOS 18.5 with a rootless jailbreak."
+        }
+      ]
+    },
+    {
+      "class": "DepictionStackView",
+      "tabname": "Changelog",
+      "views": [
+        { "class": "DepictionHeaderView", "title": "Version 0.2.2" },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "The Bluetooth device switch now appears reliably on the device detail page. The Settings controller keeps its own specifier list; earlier builds added the switch to a detached copy that never reached the visible table. The switch and its per-device preference write were verified on iPhone 11 / iOS 18.5."
+        }
+      ]
+    }
+  ]
+}

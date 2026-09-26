@@ -3,8 +3,12 @@ Name: BT CarPlay KeepAlive
 Version: 0.2.2
 Architecture: iphoneos-arm64
 Description: Keep a selected Bluetooth personal-hotspot connection active while CarPlay is in use.
+Homepage: https://github.com/pavunato/btcarplaykeepalive
+Icon: https://repopo.pages.dev/icons/com.pavunato.btcarplaykeepalive.png
+Depiction: https://repopo.pages.dev/btcarplaykeepalive.html
+SileoDepiction: https://repopo.pages.dev/depictions/btcarplaykeepalive-0.2.2.json
 Depends: firmware (>= 15.0), mobilesubstrate
 Maintainer: pavunato
 Author: pavunato
 Section: Tweaks
-Tag: role::tweak
+Tag: compatible::ios18
