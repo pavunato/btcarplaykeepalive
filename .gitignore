@@ -1,0 +1,5 @@
+.theos/
+packages/
+*.dSYM
+.local-history/
+.DS_Store

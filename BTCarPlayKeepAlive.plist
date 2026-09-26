@@ -1,0 +1,9 @@
+{
+    Filter = {
+        Executables = (
+            "SpringBoard",
+            "Preferences",
+            "CarPlayTemplateUIHost"
+        );
+    };
+}
